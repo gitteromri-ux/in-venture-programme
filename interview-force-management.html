@@ -1385,6 +1385,39 @@
 
 <table border="0" cellspacing="0" cellpadding="0" class="table-Table61"><colgroup><col width="786"/></colgroup><tr class="row-Table61_1"><td style="text-align:left;width:7.0833in; " class="cell-Table61_A1"><p class="paragraph-P5"> </p></td></tr></table>
 
-</div></body>
+</div>
+<style id="inv-edit-style">
+  .inv-fill{ outline:none; cursor:text; }
+  .inv-fill:focus{ box-shadow:inset 0 0 0 2px #e8552f; }
+</style>
+<script id="inv-edit-js">
+document.addEventListener('DOMContentLoaded',function(){
+  var key='invfill:'+location.pathname.split('/').pop();
+  var saved={};
+  try{ saved=JSON.parse(localStorage.getItem(key)||'{}'); }catch(e){}
+  var cells=document.querySelectorAll('#inv-page td');
+  var n=0;
+  cells.forEach(function(td){
+    var t=(td.textContent||'').replace(/\u00a0|\s/g,'');
+    if(t.length>0) return;                 // only the empty grey boxes
+    var id='c'+(n++);
+    td.setAttribute('data-invid',id);
+    td.classList.add('inv-fill');
+    td.setAttribute('contenteditable','true');
+    td.setAttribute('spellcheck','true');
+    if(saved[id]){ td.innerHTML=saved[id]; }
+    td.addEventListener('input',function(){
+      saved[id]=td.innerHTML;
+      try{ localStorage.setItem(key,JSON.stringify(saved)); }catch(e){}
+    });
+    td.addEventListener('paste',function(e){
+      e.preventDefault();
+      var txt=(e.clipboardData||window.clipboardData).getData('text');
+      document.execCommand('insertText',false,txt);
+    });
+  });
+});
+</script>
+</body>
 
 </html>
